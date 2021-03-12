@@ -9,8 +9,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAIN_ARRAY_SIZE 10
+#define MAX_LINE_SIZE 256
+
 //void import_file(char* file_name, )
 
-void import_file(char* file_name, char** block, int *file_size);
+int import_file(char* file_name, char** block);
+
+void init();
+void clean();
+
+void merge_files(char* f_name1, char * f_name2);
 
 #endif //LAB1_MY_LIB_H

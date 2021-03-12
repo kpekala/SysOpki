@@ -14,3 +14,6 @@ clean:
 	rm -f main.o
 	rm -f mylib.o
 	rm -f main
+
+vlgr:
+	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./main
