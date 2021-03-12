@@ -65,7 +65,34 @@ void print_block(char **block, int size){
  */
 
 void merge_blocks(char ** block1, char** block2, int f_size1, int f_size2){
+    int f_size = f_size1 + f_size2;
 
+    //Ostatnie linijki w blokach nie posiadają symbolu \n, dodajmy je teraz
+    strcat(block1[f_size1-1],"\n");
+    strcat(block2[f_size2-1],"\n");
+
+    FILE * fp;
+    int i=0,i1=0,i2=0;
+    fp = fopen ("temp.txt","w");
+    while (i1 < f_size1 && i2 < f_size2){
+        if (i % 2 == 0){
+            fprintf (fp, "%s", block1[i1]);
+            i1++;
+        }else{
+            fprintf (fp, "%s", block2[i2]);
+            i2++;
+        }
+        i++;
+    }
+    while (i1 < f_size1){
+        fprintf (fp, "%s", block1[i1]);
+        i1++;
+    }
+    while (i2 < f_size2){
+        fprintf (fp, "%s", block2[i2]);
+        i2++;
+    }
+    fclose (fp);
 }
 
 void merge_files(char* f_name1, char * f_name2){
