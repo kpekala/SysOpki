@@ -16,9 +16,10 @@
 
 int import_file(char* file_name, char** block);
 
-void init();
+void init(int arr_size);
 void clean();
 
+int rows_number(int block_index);
 void merge_files(char* f_name1, char * f_name2);
 
 #endif //LAB1_MY_LIB_H

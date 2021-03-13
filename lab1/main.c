@@ -35,8 +35,10 @@ int main() {
 
     char f_name1[20] = "file1.txt";
     char f_name2[20] = "file2.txt";
-    init();
+    init(5);
     merge_files(f_name1,f_name2);
+    printf("Size of merged block: %d\n",rows_number(0));
+    printf("Size of merged block: %d\n",rows_number(1));
     clean();
     return 0;
 }

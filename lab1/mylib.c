@@ -1,6 +1,17 @@
 #include "mylib.h"
 
-char ***main_pointer = NULL;
+struct MainArr{
+    struct Block** main_pointer;
+    int array_size;
+    int last_index;
+} mainArr;
+
+struct Block{
+    char** pointer;
+    int f_size;
+};
+
+
 
 int import_file(char* file_name, char** block){
     FILE * fp;
@@ -17,7 +28,6 @@ int import_file(char* file_name, char** block){
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
             //printf("%s\n", line);
             //printf("%lu hoho",strlen(line));
-            printf("%d ",i);
             if(block != NULL)
                 strcpy(block[i],line);
         i++;
@@ -29,12 +39,21 @@ int import_file(char* file_name, char** block){
     return i;
 }
 
-void init(){
-    main_pointer = (char***) calloc(MAIN_ARRAY_SIZE,sizeof(char**));
+void init(int arr_size){
+    mainArr.main_pointer = (struct Block**) calloc(arr_size,sizeof(struct Block*));
+    mainArr.array_size = arr_size;
+    mainArr.last_index = -1;
+    /*for(int i=0; i<array_size; i++){
+        main_pointer[i] = (char **)calloc(1, sizeof(char*));
+    }*/
 }
 
 void clean(){
-    free(main_pointer);
+    for(int i=0; i<mainArr.array_size; i++){
+        if(mainArr.main_pointer[i] != NULL)
+            free(mainArr.main_pointer[i]);
+    }
+    free(mainArr.main_pointer);
 }
 
 void clean_block(char **block, int size){
@@ -51,7 +70,7 @@ void init_block(char **block, int size){
 }
 
 void print_block(char **block, int size){
-    printf("Reading block... \n");
+    printf("\nReading block... \n");
     for(int i=0; i<size; i++){
         printf("%s",block[i]);
     }
@@ -98,9 +117,11 @@ void merge_blocks(char ** block1, char** block2, int f_size1, int f_size2){
 void merge_files(char* f_name1, char * f_name2){
     char** block1;
     char** block2;
+    char tmp_f_name[20] = "temp.txt";
     int f_size1 = import_file(f_name1,NULL);
     int f_size2 = import_file(f_name2,NULL);
-    printf("Rozmiar nowego pliku: %d \n",f_size1 + f_size2);
+    int f_size = f_size1 + f_size2;
+    printf("\nRozmiar nowego pliku: %d \n",f_size);
 
     block1 = (char**) calloc(f_size1, sizeof(char*));
     block2 = (char**) calloc(f_size2, sizeof(char*));
@@ -115,6 +136,35 @@ void merge_files(char* f_name1, char * f_name2){
 
     merge_blocks(block1, block2, f_size1, f_size2);
 
+    //Now we create final block of merged files
+    //Pointer to this block will be stored in main array
+    char ** block_ptr = calloc(f_size, sizeof(char*));
+    init_block(block_ptr,f_size);
+    import_file(tmp_f_name,block_ptr);
+
+    print_block(block_ptr,f_size);
+
+    struct Block* block = (struct Block*) calloc(1,sizeof(struct Block));
+    block->pointer = block_ptr;
+    block->f_size = f_size;
+
+    mainArr.last_index++;
+    mainArr.main_pointer[mainArr.last_index] = block;
+
+
+    clean_block(block_ptr,f_size);
     clean_block(block1,f_size1);
     clean_block(block2,f_size2);
+}
+
+int rows_number(int block_index){
+    if(block_index >= mainArr.array_size){
+        printf("Out of the bound exeption!\n");
+        return -1;
+    }
+    if(mainArr.main_pointer[block_index] == NULL){
+        printf("There is no block with given index!\n");
+        return -1;
+    }
+    return mainArr.main_pointer[block_index]->f_size;
 }
