@@ -20,6 +20,11 @@ void init(int arr_size);
 void clean();
 
 int rows_number(int block_index);
-void merge_files(char* f_name1, char * f_name2);
+int merge_files(char* f_name1, char * f_name2);
+
+int remove_block(int index);
+int remove_row(int block_index, int row_index);
+
+void print_block(int block_index);
 
 #endif //LAB1_MY_LIB_H

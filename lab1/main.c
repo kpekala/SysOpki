@@ -39,6 +39,9 @@ int main() {
     merge_files(f_name1,f_name2);
     printf("Size of merged block: %d\n",rows_number(0));
     printf("Size of merged block: %d\n",rows_number(1));
+    remove_row(0,1);
+    print_block(0);
+    remove_block(0);
     clean();
     return 0;
 }

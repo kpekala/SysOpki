@@ -26,10 +26,13 @@ int import_file(char* file_name, char** block){
 
     int i=0;
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
-            //printf("%s\n", line);
-            //printf("%lu hoho",strlen(line));
-            if(block != NULL)
-                strcpy(block[i],line);
+        //printf("%s\n", line);
+        //printf("%lu hoho",strlen(line));
+        if(block != NULL && line[0] != '\n')
+            strcpy(block[i],line);
+        if(line[0] == '\n'){
+            strcpy(block[i],"\n");
+        }
         i++;
     }
     //*file_size = i;
@@ -69,10 +72,11 @@ void init_block(char **block, int size){
     }
 }
 
-void print_block(char **block, int size){
+void print_block_l(char **block, int size){
     printf("\nReading block... \n");
     for(int i=0; i<size; i++){
-        printf("%s",block[i]);
+        if(block[i] != NULL)
+            printf("%s",block[i]);
     }
     printf("\n");
 }
@@ -114,7 +118,7 @@ void merge_blocks(char ** block1, char** block2, int f_size1, int f_size2){
     fclose (fp);
 }
 
-void merge_files(char* f_name1, char * f_name2){
+int merge_files(char* f_name1, char * f_name2){
     char** block1;
     char** block2;
     char tmp_f_name[20] = "temp.txt";
@@ -131,8 +135,8 @@ void merge_files(char* f_name1, char * f_name2){
     import_file(f_name1, block1);
     import_file(f_name2, block2);
 
-    print_block(block1,f_size1);
-    print_block(block2, f_size2);
+    //print_block(block1,f_size1);
+    //print_block(block2, f_size2);
 
     merge_blocks(block1, block2, f_size1, f_size2);
 
@@ -142,7 +146,7 @@ void merge_files(char* f_name1, char * f_name2){
     init_block(block_ptr,f_size);
     import_file(tmp_f_name,block_ptr);
 
-    print_block(block_ptr,f_size);
+    //print_block(block_ptr,f_size);
 
     struct Block* block = (struct Block*) calloc(1,sizeof(struct Block));
     block->pointer = block_ptr;
@@ -152,19 +156,57 @@ void merge_files(char* f_name1, char * f_name2){
     mainArr.main_pointer[mainArr.last_index] = block;
 
 
-    clean_block(block_ptr,f_size);
+    //clean_block(block_ptr,f_size);
     clean_block(block1,f_size1);
     clean_block(block2,f_size2);
+
+    return mainArr.last_index;
 }
 
-int rows_number(int block_index){
-    if(block_index >= mainArr.array_size){
+int check_block(int index){
+    if(index >= mainArr.array_size){
         printf("Out of the bound exeption!\n");
         return -1;
     }
-    if(mainArr.main_pointer[block_index] == NULL){
+    if(mainArr.main_pointer[index] == NULL){
         printf("There is no block with given index!\n");
         return -1;
     }
+    return 0;
+}
+
+int rows_number(int block_index){
+    if (check_block(block_index) == -1)
+        return -1;
     return mainArr.main_pointer[block_index]->f_size;
+}
+
+
+
+int remove_block(int index){
+    clean_block(mainArr.main_pointer[index]->pointer,mainArr.main_pointer[index]->f_size);
+    return 0;
+    /*
+    if (check_block(index) == -1)
+        return -1;
+    for (int i=0; i<mainArr.main_pointer[index]->f_size; i++){
+        printf("%d %s\n",i,mainArr.main_pointer[index]->pointer[i]);
+        free(mainArr.main_pointer[index]->pointer[i]);
+        free(mainArr.main_pointer[index]->pointer);
+        free(mainArr.main_pointer[index]);
+    }
+    mainArr.main_pointer[index] = NULL;*/
+}
+
+int remove_row(int block_index, int row_index){
+    struct Block* block = mainArr.main_pointer[block_index];
+    if (row_index >= block->f_size && row_index < 0)
+        return -1;
+    free(block->pointer[row_index]);
+    block->pointer[row_index] = NULL;
+}
+
+void print_block(int block_index){
+    print_block_l(mainArr.main_pointer[block_index]->pointer,
+                  mainArr.main_pointer[block_index]->f_size);
 }
