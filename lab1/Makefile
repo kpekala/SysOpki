@@ -1,12 +1,11 @@
 all: build
 
-build: main.o mylib.o
-	gcc main.o mylib.o -o main
+build: main.o
+	gcc main.o mylib/mylib.a -o main
 
-
-mylib.o: mylib.c
-	gcc -c mylib.c
-
+shared: main.o
+	gcc -L/home/konrad/Pulpit/Studia/sysopy/laby/lab1/mylib -Wall -o main main.c -l:mylib.so
+	export LD_LIBRARY_PATH=/home/konrad/Pulpit/Studia/sysopy/laby/lab1/mylib:$LD_LIBRARY_PATH
 main.o: main.c
 	gcc -c main.c -g
 

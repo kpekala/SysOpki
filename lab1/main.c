@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "mylib.h"
+#include "mylib/mylib.h"
 
 #define STRING_SIZE 10
 #define BLOCK_SIZE 10

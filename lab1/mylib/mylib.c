@@ -16,8 +16,6 @@ struct Block{
 int import_file(char* file_name, char** block){
     FILE * fp;
     char * line = calloc(MAX_LINE_SIZE, sizeof(char));
-    size_t len = 0;
-    ssize_t read;
 
 
     fp = fopen(file_name, "r");
@@ -25,7 +23,6 @@ int import_file(char* file_name, char** block){
         exit(1);
 
     int i=0;
-    int last_empty = 0;
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
         //printf("%s\n", line);
         //printf("%lu hoho",strlen(line));
@@ -37,7 +34,6 @@ int import_file(char* file_name, char** block){
         }
         i++;
     }
-    if(last_empty == 1)
         i++;
     fclose(fp);
     if(line)
@@ -48,8 +44,6 @@ int import_file(char* file_name, char** block){
 int read_file_size(char* file_name){
     FILE * fp;
     char * line = calloc(MAX_LINE_SIZE, sizeof(char));
-    size_t len = 0;
-    ssize_t read;
 
 
     fp = fopen(file_name, "r");
@@ -121,7 +115,6 @@ void print_block_l(char **block, int size){
  */
 
 void merge_blocks(char ** block1, char** block2, int f_size1, int f_size2){
-    int f_size = f_size1 + f_size2;
 
     //Ostatnie linijki w blokach nie posiadają symbolu \n, dodajmy je teraz
     strcat(block1[f_size1-1],"\n");
@@ -237,6 +230,7 @@ int remove_row(int block_index, int row_index){
         return -1;
     free(block->pointer[row_index]);
     block->pointer[row_index] = NULL;
+    return 0;
 }
 
 void print_block(int block_index){
