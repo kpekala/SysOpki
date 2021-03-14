@@ -25,17 +25,50 @@ int import_file(char* file_name, char** block){
         exit(1);
 
     int i=0;
+    int last_empty = 0;
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
         //printf("%s\n", line);
         //printf("%lu hoho",strlen(line));
-        if(block != NULL && line[0] != '\n')
+        if(line[0] != '\n'){
             strcpy(block[i],line);
-        if(line[0] == '\n'){
-            strcpy(block[i],"\n");
+        }
+        else{
+            strcpy(block[i]," \n");
         }
         i++;
     }
-    //*file_size = i;
+    if(last_empty == 1)
+        i++;
+    fclose(fp);
+    if(line)
+        free(line);
+    return i;
+}
+
+int read_file_size(char* file_name){
+    FILE * fp;
+    char * line = calloc(MAX_LINE_SIZE, sizeof(char));
+    size_t len = 0;
+    ssize_t read;
+
+
+    fp = fopen(file_name, "r");
+    if (fp == NULL)
+        exit(1);
+
+    int i=0;
+    int last_empty = 0;
+    while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
+        if(line[0] != '\n'){
+            last_empty = 0;
+        }
+        else{
+            last_empty = 1;
+        }
+        i++;
+    }
+    if(last_empty == 1)
+        i++;
     fclose(fp);
     if(line)
         free(line);
@@ -122,8 +155,8 @@ int merge_files(char* f_name1, char * f_name2){
     char** block1;
     char** block2;
     char tmp_f_name[20] = "temp.txt";
-    int f_size1 = import_file(f_name1,NULL);
-    int f_size2 = import_file(f_name2,NULL);
+    int f_size1 = read_file_size(f_name1);
+    int f_size2 = read_file_size(f_name2);
     int f_size = f_size1 + f_size2;
     printf("\nRozmiar nowego pliku: %d \n",f_size);
 
