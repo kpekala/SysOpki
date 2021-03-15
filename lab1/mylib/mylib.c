@@ -86,6 +86,7 @@ void clean_block(char **block, int size){
 }
 
 void clean(){
+    printf("hoo");
     for(int i=0; i<mainArr.array_size; i++){
         if(mainArr.main_pointer[i] != NULL){
             struct Block * block = mainArr.main_pointer[i];
@@ -93,6 +94,7 @@ void clean(){
                 clean_block(block->pointer,block->f_size);
             }
             free(mainArr.main_pointer[i]);
+            printf("hii");
         }
     }
     free(mainArr.main_pointer);
@@ -100,7 +102,7 @@ void clean(){
 
 int first_empty_index(){
     for(int i=0; i<mainArr.array_size; i++){
-        if(mainArr.main_pointer[i] == NULL)
+        if(!mainArr.main_pointer[i])
             return i;
     }
     return -1;
@@ -164,7 +166,7 @@ int merge_files(char* f_name1, char * f_name2){
     int f_size1 = read_file_size(f_name1);
     int f_size2 = read_file_size(f_name2);
     int f_size = f_size1 + f_size2;
-    printf("\nRozmiar nowego pliku: %d \n",f_size);
+    //printf("\nRozmiar nowego pliku: %d \n",f_size);
 
     block1 = (char**) calloc(f_size1, sizeof(char*));
     block2 = (char**) calloc(f_size2, sizeof(char*));
@@ -200,7 +202,7 @@ int merge_files(char* f_name1, char * f_name2){
     clean_block(block1,f_size1);
     clean_block(block2,f_size2);
 
-    return mainArr.last_index;
+    return new_index;
 }
 
 int check_block(int index){
