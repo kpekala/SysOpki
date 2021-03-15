@@ -3,37 +3,10 @@
 
 #include "mylib/mylib.h"
 
-#define STRING_SIZE 10
-#define BLOCK_SIZE 10
+#define WORD_SIZE 30;
 
-
-void free_block(char** block_pointer){
-    for(int i=0; i<BLOCK_SIZE; i++){
-        free(block_pointer[i]);
-    }
-    free(block_pointer);
-}
-/*void init_block(char** block_pointer){
-    for(int i=0; i<BLOCK_SIZE; i++){
-        block_pointer[i] = (char*) calloc(STRING_SIZE, sizeof(char));
-    }
-}*/
 int main() {
-    /*char** block_pointer;
-    block_pointer = (char**)calloc(BLOCK_SIZE, sizeof(char*));
-    init_block(block_pointer);
-
-    int *lines_numb = malloc(sizeof(int));
-    import_file("file1.txt",block_pointer, lines_numb);
-
-    for(int i=0; i<*lines_numb; i++){
-        printf("%s", block_pointer[i]);
-    }
-
-    free(lines_numb);
-    free_block(block_pointer);*/
-
-    char f_name1[20] = "file1.txt";
+    /*char f_name1[20] = "file1.txt";
     char f_name2[20] = "file2.txt";
     init(5);
     merge_files(f_name1,f_name2);
@@ -45,6 +18,36 @@ int main() {
     print_block(0);
     remove_block(1);
     printf("fei: %d\n",first_empty_index());
+    clean();*/
+
+
+    while (1){
+        char s1[40];
+        scanf("%s",s1);
+        if(strcmp(s1,"q") == 0)
+            break;
+        else if (strcmp(s1,"create_table") == 0){
+            int n;
+            scanf("%d",&n);
+            init(n);
+        }
+        else if(strcmp(s1,"remove_block") == 0)){
+            int i;
+            scanf("%d",&i);
+            remove_block(i);
+        }
+        else if(strcmp(s1,"remove_row") == 0)){
+            int i,ii;
+            scanf("%d %d",&i,&ii);
+            remove_row(i,ii);
+        }
+        else if(strcmp(s1,"merge_files") == 0)){
+            int i,ii;
+            scanf("%d %d",&i,&ii);
+            remove_row(i,ii);
+        }
+
+    }
     clean();
     return 0;
 }
