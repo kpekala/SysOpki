@@ -1,7 +1,7 @@
 all: static
 
 static:
-	gcc -c mylib.c
+	gcc -c mylib.c -ggdb3
 	ar rcs mylib.a mylib.o
 
 shared:

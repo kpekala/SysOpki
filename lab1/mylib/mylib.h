@@ -27,4 +27,5 @@ int remove_row(int block_index, int row_index);
 
 void print_block(int block_index);
 
+int first_empty_index();
 #endif //LAB1_MY_LIB_H

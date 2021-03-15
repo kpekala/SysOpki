@@ -37,11 +37,14 @@ int main() {
     char f_name2[20] = "file2.txt";
     init(5);
     merge_files(f_name1,f_name2);
+    merge_files(f_name1,f_name2);
     printf("Size of merged block: %d\n",rows_number(0));
     printf("Size of merged block: %d\n",rows_number(1));
     remove_row(0,1);
+    printf("fei: %d\n",first_empty_index());
     print_block(0);
-    remove_block(0);
+    remove_block(1);
+    printf("fei: %d\n",first_empty_index());
     clean();
     return 0;
 }

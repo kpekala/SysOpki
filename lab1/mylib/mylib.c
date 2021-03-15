@@ -78,19 +78,32 @@ void init(int arr_size){
     }*/
 }
 
-void clean(){
-    for(int i=0; i<mainArr.array_size; i++){
-        if(mainArr.main_pointer[i] != NULL)
-            free(mainArr.main_pointer[i]);
-    }
-    free(mainArr.main_pointer);
-}
-
 void clean_block(char **block, int size){
     for(int i=0; i<size; i++){
         free(block[i]);
     }
     free(block);
+}
+
+void clean(){
+    for(int i=0; i<mainArr.array_size; i++){
+        if(mainArr.main_pointer[i] != NULL){
+            struct Block * block = mainArr.main_pointer[i];
+            if(block->pointer != NULL){
+                clean_block(block->pointer,block->f_size);
+            }
+            free(mainArr.main_pointer[i]);
+        }
+    }
+    free(mainArr.main_pointer);
+}
+
+int first_empty_index(){
+    for(int i=0; i<mainArr.array_size; i++){
+        if(mainArr.main_pointer[i] == NULL)
+            return i;
+    }
+    return -1;
 }
 
 void init_block(char **block, int size){
@@ -179,7 +192,8 @@ int merge_files(char* f_name1, char * f_name2){
     block->f_size = f_size;
 
     mainArr.last_index++;
-    mainArr.main_pointer[mainArr.last_index] = block;
+    int new_index = first_empty_index();
+    mainArr.main_pointer[new_index] = block;
 
 
     //clean_block(block_ptr,f_size);
@@ -211,17 +225,9 @@ int rows_number(int block_index){
 
 int remove_block(int index){
     clean_block(mainArr.main_pointer[index]->pointer,mainArr.main_pointer[index]->f_size);
+    free(mainArr.main_pointer[index]);
+    mainArr.main_pointer[index] = NULL;
     return 0;
-    /*
-    if (check_block(index) == -1)
-        return -1;
-    for (int i=0; i<mainArr.main_pointer[index]->f_size; i++){
-        printf("%d %s\n",i,mainArr.main_pointer[index]->pointer[i]);
-        free(mainArr.main_pointer[index]->pointer[i]);
-        free(mainArr.main_pointer[index]->pointer);
-        free(mainArr.main_pointer[index]);
-    }
-    mainArr.main_pointer[index] = NULL;*/
 }
 
 int remove_row(int block_index, int row_index){
