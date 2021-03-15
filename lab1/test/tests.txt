@@ -13,14 +13,14 @@ BF_SN
     500 lines
     {
     create_table 5
-    merge_files test/big/3k_1.txt:test/big/3k_2.txt
-    merge_files test/big/3k_1.txt:test/big/3k_2.txt
-    merge_files test/big/3k_1.txt:test/big/3k_2.txt
-    merge_files test/big/3k_1.txt:test/big/3k_2.txt
-    merge_files test/big/3k_1.txt:test/big/3k_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
     }
 
-    2000 lines
+    2k lines
     {
     create_table 5
     merge_files test/big/2k_1.txt:test/big/2k_2.txt
@@ -30,7 +30,46 @@ BF_SN
     merge_files test/big/2k_1.txt:test/big/2k_2.txt
     }
 
+    8k lines
+    {
+    create_table 5
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    }
+    64k lines
+    {
+    create_table 5
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    }
+
 BF_BN
+    500 lines
+    {
+    create_table 15
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+    merge_files test/big/500_1.txt:test/big/500_2.txt
+
+    }
     2k lines
     {
     create_table 15
@@ -68,6 +107,25 @@ BF_BN
     merge_files test/big/8k_1.txt:test/big/8k_2.txt
     merge_files test/big/8k_1.txt:test/big/8k_2.txt
     merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    }
+    64k lines
+    {
+    create_table 15
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
+    merge_files test/big/64k_1.txt:test/big/64k_1.txt
     }
 
 

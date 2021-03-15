@@ -1,0 +1,10 @@
+Operacje mergowania:
+5 par plików:
+    po 500 linijek: 0.004  sekund (cpu time), 0.004  sekund (wall time)
+    po 8k linijek:  0.034 sekund (cpu time), 0.034 sekund (wall time)
+    po 64k linijek: 0.226 sekund (cpu time), 0.242 sekund (wall time)
+
+15 par plików
+    po 500 linijek: 0.011  sekund (cpu time), 0.011  sekund (wall time)
+    po 8k linijek:  0.092  sekund (cpu time), 0.100  sekund (wall time)
+    po 64k linijek: 0.680 sekund (cpu time), 0.716 sekund (wall time)
