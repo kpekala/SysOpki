@@ -24,8 +24,6 @@ int import_file(char* file_name, char** block){
 
     int i=0;
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
-        //printf("%s\n", line);
-        //printf("%lu hoho",strlen(line));
         if(line[0] != '\n'){
             strcpy(block[i],line);
         }
@@ -86,7 +84,6 @@ void clean_block(char **block, int size){
 }
 
 void clean(){
-    printf("hoo");
     for(int i=0; i<mainArr.array_size; i++){
         if(mainArr.main_pointer[i] != NULL){
             struct Block * block = mainArr.main_pointer[i];
@@ -94,7 +91,6 @@ void clean(){
                 clean_block(block->pointer,block->f_size);
             }
             free(mainArr.main_pointer[i]);
-            printf("hii");
         }
     }
     free(mainArr.main_pointer);

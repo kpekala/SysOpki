@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "mylib/mylib.h"
 
 #define WORD_SIZE 30
 
 int main() {
+    float all_seconds = 0;
     while (1){
         char s1[WORD_SIZE];
         scanf("%s",s1);
+        clock_t  start = clock();
         if(strcmp(s1,"q") == 0)
             break;
         else if (strcmp(s1,"create_table") == 0){
@@ -44,9 +47,11 @@ int main() {
             }
 
         }
-
+        clock_t end = clock();
+        all_seconds += (float)(end - start) / CLOCKS_PER_SEC;
     }
     clean();
+    printf("Time spend: %f\n",all_seconds);
     return 0;
 
     /*Testing:

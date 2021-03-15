@@ -16,3 +16,7 @@ clean:
 
 vlgr:
 	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./main
+
+test:
+	./main
+	create_table 5
