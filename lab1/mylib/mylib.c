@@ -32,7 +32,7 @@ int import_file(char* file_name, char** block){
         }
         i++;
     }
-        i++;
+        //i++;
     fclose(fp);
     if(line)
         free(line);

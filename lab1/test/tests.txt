@@ -1,0 +1,73 @@
+Naming:
+{
+BF_SN: Big file, small number of files
+BF_BN: Big file, big number of files
+}
+
+Basic:
+create_table 1
+merge_files test/big/file1.txt:test/big/file2.txt
+
+
+BF_SN
+    500 lines
+    {
+    create_table 5
+    merge_files test/big/3k_1.txt:test/big/3k_2.txt
+    merge_files test/big/3k_1.txt:test/big/3k_2.txt
+    merge_files test/big/3k_1.txt:test/big/3k_2.txt
+    merge_files test/big/3k_1.txt:test/big/3k_2.txt
+    merge_files test/big/3k_1.txt:test/big/3k_2.txt
+    }
+
+    2000 lines
+    {
+    create_table 5
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    }
+
+BF_BN
+    2k lines
+    {
+    create_table 15
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    merge_files test/big/2k_1.txt:test/big/2k_2.txt
+    }
+    8k lines
+    {
+    create_table 15
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    merge_files test/big/8k_1.txt:test/big/8k_2.txt
+    }
+
+

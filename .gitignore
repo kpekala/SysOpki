@@ -1,4 +1,5 @@
 .idea/
 .gradle/
 cmake-build-debug/
+test/
 

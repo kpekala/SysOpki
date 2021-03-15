@@ -41,7 +41,7 @@ int main() {
                 scanf("%c",&check);
                 int i = merge_files(s1,s2);
                 printf("index %d",i);
-                print_block(i);
+                //print_block(i);
                 if (check == '\n')
                     break;
             }
@@ -55,7 +55,6 @@ int main() {
     return 0;
 
     /*Testing:
-    create_table 5
-    merge_files file1.txt:file2.txt file1.txt:file2.txt
+
      */
 }
