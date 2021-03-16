@@ -8,3 +8,14 @@ Operacje mergowania:
     po 500 linijek: 0.011  sekund (cpu time), 0.011  sekund (wall time)
     po 8k linijek:  0.092  sekund (cpu time), 0.100  sekund (wall time)
     po 64k linijek: 0.680 sekund (cpu time), 0.716 sekund (wall time)
+
+Operacje usuwania:
+5 par plików:
+    po 500 linijek: 0.0001 sekund (cpu time), 0.0001  sekund (wall time)
+    po 8k linijek:  0.003 sekund (cpu time), 0.003 sekund (wall time)
+    po 64k linijek: 0.017  sekund (cpu time), 0.017 sekund (wall time)
+
+15 par plików
+    po 500 linijek: 0.0001  sekund (cpu time), 0.0001  sekund (wall time)
+    po 8k linijek:  0.006  sekund (cpu time), 0.006  sekund (wall time)
+    po 64k linijek: 0.036 sekund (cpu time), 0.036  sekund (wall time)
