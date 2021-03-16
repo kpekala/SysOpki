@@ -1,0 +1,23 @@
+Skompilowano program z wykorzystaniem bibliotek dzielonych
+
+Operacje mergowania:
+5 par plików:
+    po 500 linijek: 0.005  sekund (cpu time), 0.005  sekund (wall time)
+    po 8k linijek:  0.033 sekund (cpu time), 0.033 sekund (wall time)
+    po 64k linijek: 0.229  sekund (cpu time), 0.247 sekund (wall time)
+
+15 par plików
+    po 500 linijek: 0.011  sekund (cpu time), 0.011  sekund (wall time)
+    po 8k linijek:  0.079  sekund (cpu time), 0.087  sekund (wall time)
+    po 64k linijek: 0.656  sekund (cpu time), 0.656  sekund (wall time)
+
+Operacje usuwania:
+5 par plików:
+    po 500 linijek: 0.0001 sekund (cpu time), 0.0001  sekund (wall time)
+    po 8k linijek:  0.003 sekund (cpu time), 0.003 sekund (wall time)
+    po 64k linijek: 0.019   sekund (cpu time), 0.020 sekund (wall time)
+
+15 par plików
+    po 500 linijek: 0.0001  sekund (cpu time), 0.0001  sekund (wall time)
+    po 8k linijek:  0.006  sekund (cpu time), 0.006  sekund (wall time)
+    po 64k linijek: 0.035  sekund (cpu time), 0.035   sekund (wall time)

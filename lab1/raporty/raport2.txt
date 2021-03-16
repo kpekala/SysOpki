@@ -1,3 +1,5 @@
+Skompilowano program z wykorzystaniem bibliotek statycznych
+
 Operacje mergowania:
 5 par plików:
     po 500 linijek: 0.004  sekund (cpu time), 0.004  sekund (wall time)
