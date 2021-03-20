@@ -1,0 +1,49 @@
+Optymalizacja -O:
+
+    Operacje mergowania:
+    5 par plików:
+        po 500 linijek: 0.004  sekund (cpu time), 0.005  sekund (wall time)
+        po 8k linijek:  0.040 sekund (cpu time), 0.041 sekund (wall time)
+        po 64k linijek: 0.222   sekund (cpu time), 0.230 sekund (wall time)
+
+    15 par plików
+        po 500 linijek: 0.010  sekund (cpu time), 0.010  sekund (wall time)
+        po 8k linijek:  0.080  sekund (cpu time), 0.080  sekund (wall time)
+        po 64k linijek: 0.607  sekund (cpu time), 0.607  sekund (wall time)
+
+    Operacje usuwania:
+    5 par plików:
+        po 500 linijek: 0.0001 sekund (cpu time), 0.0001  sekund (wall time)
+        po 8k linijek:  0.002 sekund (cpu time), 0.002 sekund (wall time)
+        po 64k linijek: 0.019   sekund (cpu time), 0.019 sekund (wall time)
+
+    15 par plików
+        po 500 linijek: 0.0001  sekund (cpu time), 0.0001  sekund (wall time)
+        po 8k linijek:  0.006  sekund (cpu time), 0.006  sekund (wall time)
+        po 64k linijek: 0.036  sekund (cpu time), 0.036   sekund (wall time)
+Wniosek: brak znacznych różnic w porównaniu do defaultowej optymalizacji
+
+Optymalizacja -O3:
+
+    Operacje mergowania:
+    5 par plików:
+        po 500 linijek: 0.005  sekund (cpu time), 0.005  sekund (wall time)
+        po 8k linijek:  0.035 sekund (cpu time), 0.035 sekund (wall time)
+        po 64k linijek: 0.229    sekund (cpu time), 0.248  sekund (wall time)
+
+    15 par plików
+        po 500 linijek: 0.011  sekund (cpu time), 0.011  sekund (wall time)
+        po 8k linijek:  0.081  sekund (cpu time), 0.082  sekund (wall time)
+        po 64k linijek: 0.627  sekund (cpu time), 0.627  sekund (wall time)
+
+    Operacje usuwania:
+    5 par plików:
+        po 500 linijek: 0.0001 sekund (cpu time), 0.0001  sekund (wall time)
+        po 8k linijek:  0.002 sekund (cpu time), 0.002 sekund (wall time)
+        po 64k linijek: 0.016   sekund (cpu time), 0.016 sekund (wall time)
+
+    15 par plików
+        po 500 linijek: 0.0001  sekund (cpu time), 0.0001  sekund (wall time)
+        po 8k linijek:  0.006  sekund (cpu time), 0.006  sekund (wall time)
+        po 64k linijek: 0.035  sekund (cpu time), 0.035   sekund (wall time)
+Wniosek: także brak różnic w porównaniu do defaultowej optymalizacji

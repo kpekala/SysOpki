@@ -16,6 +16,14 @@ main_dynamic.o:
 main.o: main.c
 	gcc -c main.c -g -ggdb3
 
+optO:
+	gcc -c main.c -g -ggdb3 -O
+	gcc main.o mylib/mylib.a -o main
+
+opt3:
+	gcc -c main.c -g -ggdb3 -O3
+	gcc main.o mylib/mylib.a -o main
+
 clean:
 	rm -f main.o
 	rm -f mylib.o
