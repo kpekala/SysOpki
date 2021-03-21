@@ -11,4 +11,4 @@ clean:
 	rm -f main
 
 vlgr:
-	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./main 123  345
+	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./main f1.txt  f2.txt
