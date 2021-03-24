@@ -1,0 +1,12 @@
+Wielkość pliku: 27 000 baitów
+
+Funkcje systemowe:
+real    0m0,024s
+user    0m0,000s
+sys     0m0,023s
+
+Funkcje biblioteczne:
+real    0m0,002s
+user    0m0,002s
+sys     0m0,000s
+

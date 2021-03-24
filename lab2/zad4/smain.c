@@ -7,7 +7,7 @@
 #include <sys/stat.h>
 
 #define FILE_NAME_SIZE 30
-#define MAX_FILE_SIZE 256
+#define MAX_FILE_SIZE 30000
 
 void do_magic(char f_name1[], char f_name2[], char n1[], char n2[]);
 
@@ -24,7 +24,8 @@ void do_magic(char f_name1[], char f_name2[], char n1[], char n2[]){
         printf("Cannot read file\n");
         return;
     }
-    char * buffer1 = calloc(MAX_FILE_SIZE, sizeof(char));
+    char * buffer1 = calloc(MAX_FILE_SIZE+1, sizeof(char));
+    buffer1[MAX_FILE_SIZE] = '\0';
 
     size_t size1 = read(fp1,buffer1,MAX_FILE_SIZE);
     for(int i=0; i<size1; i++){
