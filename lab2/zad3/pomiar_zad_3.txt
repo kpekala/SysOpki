@@ -1,0 +1,11 @@
+Wielkość pliku: 2400 liczb
+
+Notka: zaimpplementowano tylko wariant z funkcją biblioteczną fopen i fscanf
+(nie mogłem znaleść alternatywy systemowej dla fscanf)
+
+Funkcje biblioteczne:
+real    0m0,002s
+user    0m0,002s
+sys     0m0,000s
+
+

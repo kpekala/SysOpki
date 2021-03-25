@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #define MAX_LINE_SIZE 256
-#define MAX_FILE_SIZE 256
+#define MAX_FILE_SIZE 3000000
 
 void do_magic(char* f_name1, char* f_name2){
     int fp1, fp2;

@@ -20,4 +20,4 @@ vlgr:
 	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./main 5 f1.txt
 
 svlgr:
-	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./smain p smain.c
+	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./smain 5 f1.txt

@@ -45,6 +45,8 @@ void do_magic(char* f_name1, char* f_name2){
 
     }
 
+    close(fp1);
+    close(fp2);
     free(buffer1);
     free(buffer2);
 }

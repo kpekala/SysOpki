@@ -52,5 +52,6 @@ void do_magic(char symbol, char *f_name) {
             break;
     }
     free(line);
+    close(fp1);
 }
 
