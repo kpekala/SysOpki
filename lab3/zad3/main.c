@@ -46,9 +46,14 @@ void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_l
         strcat(f_path,file_d->d_name);
         if(is_directory(f_path) && is_real_directory(f_path) && depth_left > 0){
             //bez nowego procesu narazie
-            printf("Going to %s\n",f_path);
-            strcat(f_path,"/");
-            search_directory(f_path, pattern, depth_left-1);
+            pid_t child_pid = fork();
+            if(child_pid == 0){
+                printf("Going to %s\n",f_path);
+                strcat(f_path,"/");
+                search_directory(f_path, pattern, depth_left-1);
+                closedir(dir);
+                return;
+            }
         }else if(is_text_file(f_path) && pattern_in_file(f_path, pattern)){
             printf("Pattern in %s!\n",f_path);
         }
