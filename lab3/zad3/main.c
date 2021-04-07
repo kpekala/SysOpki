@@ -13,9 +13,11 @@
 
 int is_directory(const char *path);
 int is_text_file(const char *path);
-void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_left);
+void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_left, pid_t pid);
 int is_real_directory(const char *path);
 int pattern_in_file(char * f_path,char * pattern);
+
+int base_path_size = -1;
 
 int main(int argc, char *argv[]) {
     // Na wejsciu dostajemy: 1. sciezke, 2. lancuch, 3. maksymalna dlugosc
@@ -26,12 +28,13 @@ int main(int argc, char *argv[]) {
     char* path = argv[1];
     char* pattern = argv[2];
     int max_depth = atoi(argv[3]);
-    search_directory(path, pattern, max_depth);
+    base_path_size = strlen(path);
+    search_directory(path, pattern, max_depth, getpid());
 
     return 0;
 }
 
-void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_left){
+void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_left, pid_t pid){
     DIR* dir = opendir(dir_path);
     if (dir == NULL){
         printf("Dir is null, %s\n",dir_path);
@@ -40,7 +43,7 @@ void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_l
 
     struct dirent* file_d = readdir(dir);
     while (file_d != NULL){
-        printf("%s: %s\n",dir_path, file_d->d_name);
+        //printf("%s: %s\n",dir_path, file_d->d_name);
         char f_path[PATH_SIZE] = "";
         strcat(f_path,dir_path);
         strcat(f_path,file_d->d_name);
@@ -48,14 +51,15 @@ void search_directory(const char dir_path[PATH_SIZE], char* pattern, int depth_l
             //bez nowego procesu narazie
             pid_t child_pid = fork();
             if(child_pid == 0){
-                printf("Going to %s\n",f_path);
+                //printf("Going to %s\n",f_path);
                 strcat(f_path,"/");
-                search_directory(f_path, pattern, depth_left-1);
+                search_directory(f_path, pattern, depth_left-1, getpid());
                 closedir(dir);
                 return;
             }
         }else if(is_text_file(f_path) && pattern_in_file(f_path, pattern)){
-            printf("Pattern in %s!\n",f_path);
+            printf("Relative path: %s\n",&f_path[base_path_size]);
+            printf("Pattern in %s found by process: %d\n",f_path, pid);
         }
         file_d = readdir(dir);
     }
