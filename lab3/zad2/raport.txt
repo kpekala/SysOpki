@@ -1,0 +1,15 @@
+Skompilowano program z wykorzystaniem bibliotek statycznych
+
+Operacje mergowania:
+5 par plików:
+    po 500 linijek: ~0.000  sekund (cpu time), ~0.000  sekund (wall time)
+    po 8k linijek:  ~0.000  sekund (cpu time), ~0.000  sekund (wall time)
+    po 64k linijek: ~0.000  sekund (cpu time), ~0.000  sekund (wall time)
+
+15 par plików
+    po 500 linijek: ~0.001  sekund (cpu time), ~0.001  sekund (wall time)
+    po 8k linijek:  ~0.001  sekund (cpu time), ~0.001  sekund (wall time)
+    po 64k linijek: ~0.001  sekund (cpu time), ~0.001  sekund (wall time)
+    po 256k linijek: ~0.002  sekund (cpu time), ~0.187  sekund (wall time)
+
+Wniosek: program dziala zdecydowanie szybciej w porównaniu do programu z lab. 1

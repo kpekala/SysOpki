@@ -3,6 +3,7 @@
 #include <time.h>
 #include <sys/times.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "mylib/mylib.h"
@@ -13,17 +14,7 @@ struct timespec begin, end;
 struct timespec cpu_begin, cpu_end;
 
 void clean_data(){
-    struct timespec c_begin, c_end;
-    struct timespec c_cpu_begin, c_cpu_end;
-    clock_gettime(CLOCK_REALTIME, &c_begin);
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &c_cpu_begin);
     clean();
-    clock_gettime(CLOCK_REALTIME, &c_end);
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &c_cpu_end);
-    double w_t = (c_end.tv_sec - c_begin.tv_sec) + (c_end.tv_nsec - c_begin.tv_nsec)*1e-9;
-    double cpu_t = (c_cpu_end.tv_sec - c_cpu_begin.tv_sec) + (c_cpu_end.tv_nsec - c_cpu_begin.tv_nsec)*1e-9;
-    printf("cleaning cpu Time measured: %.3f seconds.\n", cpu_t);
-    printf("cleaning wall time measured: %.3f seconds.\n", w_t);
 }
 
 int main() {
@@ -69,7 +60,7 @@ int main() {
                     clean_data();
                     return 0;
                 }
-                printf("child_pid: %d\n",child_pid);
+                //printf("child_pid: %d\n",child_pid);
                 if (check == '\n')
                     break;
             }
@@ -84,6 +75,20 @@ int main() {
         all_time += seconds + nanoseconds*1e-9;
         all_time_cpu += cpu_sec + cpu_nansec*1e-9;
     }
+
+    // for time measuring
+    clock_gettime(CLOCK_REALTIME, &begin);
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &cpu_begin);
+    while (wait(NULL) > 0){
+    }
+    clock_gettime(CLOCK_REALTIME, &end);
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &cpu_end);
+    long seconds = end.tv_sec - begin.tv_sec;
+    long nanoseconds = end.tv_nsec - begin.tv_nsec;
+    long cpu_sec = cpu_end.tv_sec - cpu_begin.tv_sec;
+    long cpu_nansec = cpu_end.tv_nsec - cpu_begin.tv_nsec;
+    all_time += seconds + nanoseconds*1e-9;
+    all_time_cpu += cpu_sec + cpu_nansec*1e-9;
 
     clean_data();
     printf("cpu Time measured: %.3f seconds.\n", all_time_cpu);
