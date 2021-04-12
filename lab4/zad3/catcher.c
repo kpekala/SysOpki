@@ -31,11 +31,12 @@ int main(int argc, char *argv[]) {
 void createSIG1handler(){
     struct sigaction act;
     memset (&act, '\0', sizeof(act));
-    act.sa_sigaction = &handleSIG1;
+    act.sa_sigaction = (void *)handleSIG1;
+    sigemptyset(&act.sa_mask);
     act.sa_flags = SA_SIGINFO;
 
     if (sigaction(SIGUSR1, &act, NULL) < 0) {
-        printf("Failed in creating singal handler!\n");
+        printf("Failed in creating signal handler!\n");
         exit(1);
     }
 }
@@ -51,6 +52,9 @@ void handleSIG1(int signum, siginfo_t *siginfo, void *context){
 void handleSIG2(int signum){
     printf("SIGUSR2 signal received\n");
     printf("Received %d SIGUSR1 signals\n", sig1_signals_received);
+    printf("sender_pid: %d\n",sender_pid);
+    return;
+    exit(0);
 
     for (int i=0; i<sig1_signals_received; i++){
         kill(sender_pid,SIGUSR1);
