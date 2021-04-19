@@ -63,3 +63,23 @@ void parse_section(char * line, Section* new_section){
         parse_program(line,&itr,parsing_end,new_section);
     }
 }
+
+void parse(char* path, Section **sections, int *sections_numb) {
+    FILE * fp;
+    char * line = calloc(MAX_LINE_SIZE, sizeof(char));
+    fp = fopen(file_name, "r");
+    if (fp == NULL)
+        exit(1);
+
+    int sections_i=0;
+    while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
+        if (strstr(line,"=")!= NULL){
+            sections[sections_i] = calloc(1, sizeof(Section));
+            parse_section(line,sections_i[sections_i]);
+            sections_i++;
+        }
+    }
+    fclose(fp);
+    if(line)
+        free(line);
+}
