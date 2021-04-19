@@ -13,8 +13,16 @@ void handleSIG3(int signum, siginfo_t *siginfo, void *context);
 void createSIGhandler(int flags, int signal, void* handler);
 
 int main(int argc, char *argv[]) {
+    //Dzieki SA_SIGINFO jesteśmy wstanie skorzystac z funkcji 3 argumentowej obslugujacej sygnaly
+    //Mozemy dzieki temu pobrac wiadomosc o pid procesu nadawcy
     createSIGhandler(SA_SIGINFO, SIGUSR1, (void *)handleSIG);
+
+    //SA_RESTART restartuje funkcje "primitives" (takie jak open/write) gdy dostaniemy sygnal podczas wykonywania
+    //tej funkcji
     createSIGhandler(SA_SIGINFO | SA_RESTART, SIGTSTP, (void *)handleSIG2);
+
+    //"Restore the signal action to the default upon entry to the signal handler."
+    // https://man7.org/linux/man-pages/man2/sigaction.2.html
     createSIGhandler(SA_SIGINFO | SA_RESETHAND, SIGUSR2, (void *)handleSIG3);
     int t;
     scanf("%d", &t);

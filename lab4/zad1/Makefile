@@ -1,14 +1,24 @@
 all: build
 
-build: main.o
-	gcc main.o -o main
+build: fork_ver.o
+	gcc fork_ver.o -o fork_ver
 
-main.o: main.c
-	gcc -c main.c -g -ggdb3
+fork_ver.o: fork_ver.c
+	gcc -c fork_ver.c -g -ggdb3
 
 clean:
-	rm -f main.o
-	rm -f main
+	rm -f fork_ver.o
+	rm -f fork_ver
+	rm -f exec_ver.o
+	rm -f exec_ver
+
+build_e: exec_ver.o
+	gcc signal_test.c -o signal_test
+	gcc exec_ver.o -o exec_ver
+
+exec_ver.o: exec_ver.c
+	gcc -c exec_ver.c -g -ggdb3
+
 
 vlgr:
-	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./main
+	valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ./fork_ver

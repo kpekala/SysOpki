@@ -1,0 +1,13 @@
+Raport z zadania 1
+
+Funkcja fork:
+handler: proces potomny dziedziczy handlery obsługujące sygnały
+mask: proces potomny dziedziczy ustawienia blokowania
+ignore: proces potomny dziedziczy ustawienia ignorowania
+pending: proces potomny nie widzi sygnału odblokowanego, który został obsłużony przez ojca
+
+Funkcja exec:
+handler: nowy proces nie dziedziczy funkcji obsługujacych sygnały
+mask: nowy proces dziedziczy ustawienia blokowania
+ignore: nowy proces dziedziczy ustawienia ignorowania
+pending: nowy proces dziedziczy nie obsłużone sygnały

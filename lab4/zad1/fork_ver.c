@@ -10,11 +10,14 @@
 void ignore();
 void handle();
 void mask();
+void unmask();
 void pending();
 void handleSIG(int signum);
 void print_parent();
 
 int is_parent = 1;
+int child_raise = 1;
+sigset_t new_mask;
 
 int main(int argc, char *argv[]) {
     if(argc != 2){
@@ -22,22 +25,20 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     char * option = argv[1];
-    int child_raise = 1;
+    handle();
     if(strcmp(option, "ignore") == 0) {
         printf("ignore option\n");
         ignore();
-    }/*else if (strcmp(option, "handler") == 0){
+    }else if (strcmp(option, "handler") == 0){
         printf("handler option\n");
-        handle();
-    }*/else if(strcmp(option, "mask") == 0){
+    }else if(strcmp(option, "mask") == 0){
         printf("mask option\n");
         mask();
     }else if (strcmp(option, "pending") == 0){
         printf("pending option\n");
-        pending();
+        mask();
         child_raise = 0;
     }
-    handle();
 
     raise(SIGUSR1);
     pid_t child_pid = fork();
@@ -46,6 +47,8 @@ int main(int argc, char *argv[]) {
         if(child_raise)
             raise(SIGUSR1);
     }
+    if (!child_raise)
+        unmask();
 
     return 0;
 }
@@ -55,7 +58,10 @@ void ignore(){
 }
 
 void handleSIG(int signum){
-    printf("SIGUSR1 signal received\n");
+    printf("SIGUSR1 signal received, is_parent: %d\n",is_parent);
+    if(!child_raise){
+        printf("signal unblocked\n");
+    }
 }
 
 void handle(){
@@ -66,12 +72,16 @@ void pending(){
 }
 
 void mask(){
-    sigset_t new_mask;
-    sigset_t old_mask;
     sigemptyset(&new_mask);
     sigaddset(&new_mask, SIGUSR1);
-    if (sigprocmask(SIG_BLOCK, &new_mask, &old_mask) < 0)
+    if (sigprocmask(SIG_BLOCK, &new_mask, NULL) < 0)
         printf("Failed in blocking signal!\n");
+}
+
+void unmask(){
+    sigdelset(&new_mask, SIGUSR1);
+    if (sigprocmask(SIG_SETMASK, &new_mask, NULL) < 0)
+        printf("Failed in unblocking signal!\n");
 }
 
 void print_parent(){
