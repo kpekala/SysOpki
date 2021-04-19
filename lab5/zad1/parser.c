@@ -23,19 +23,43 @@ int is_next_program(char *line, int *itr){
             *itr += 2;
             return 1;
         }
-        itr++;
+        (*itr)++;
     }
     return 0;
 }
 
+int program_end_itr(char *line, int *itr){
+    int size = (int)strlen(line);
+    int i = *itr;
+    if(line[i] == '\n')
+        return i;
+    while (i < size){
+        if(line[i] == '|' || line[i] == '\n'){
+            return i-1;
+        }
+        i++;
+    }
+    return 0;
+}
+
+void parse_program(char *line, int *itr, int parsing_end, Section* section){
+    int i_pr = section->programs_numb;
+    Program *program = section->programs[i_pr];
+    int arg_numb = 0;
+    while (*itr < parsing_end){
+        parse_string(line,itr,program->args[arg_numb]);
+        arg_numb++;
+    }
+
+    section->programs_numb++;
+}
+
 
 void parse_section(char * line, Section* new_section){
-    // is id necessary?
     int itr = 0;
-    new_section->name = calloc(MAX_STRING_SIZE, sizeof(char));
     parse_string(line, &itr, new_section->name);
-    printf("i=%d\n",itr);
     while (is_next_program(line, &itr)){
-        //parsing program
+        int parsing_end = program_end_itr(line, &itr);
+        parse_program(line,&itr,parsing_end,new_section);
     }
 }

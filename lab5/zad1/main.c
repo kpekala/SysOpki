@@ -7,12 +7,12 @@
 
 int main(int ac, char** av){
     Section *section = (Section*) calloc(1, sizeof(Section));
-    char line[50] = "";
-    scanf("%s",line);
+    init_section(section);
+    char line[50] = "skladnik = prog1 arg1 arg2 | prog2 arg3 arg4\n";
+    printf("%s",line);
     parse_section(line,section);
     print_section(section);
 
-    free(section->name);
-    free(section);
+    free_section(section);
     return 0;
 }
