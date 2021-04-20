@@ -8,6 +8,23 @@ void print_section(Section* section) {
     }
 }
 
+void print_command(Command * command) {
+    printf("Printing command: \n");
+    for (int i=0; i<MAX_PROGRAMS; i++){
+        if(command->sections[i] != NULL && strlen(command->sections[i]) > 0)
+            printf("%s -> ",command->sections[i]);
+    }
+    printf("\n");
+}
+
+void print_commands(Command ** commands){
+    printf("!!!Printing commands!!!\n");
+    for (int i=0; i<MAX_SECTIONS_SIZE; i++){
+        if(commands[i] != NULL)
+            print_command(commands[i]);
+    }
+}
+
 void print_program(Program *program) {
     printf("Printing program: \n");
     for (int i=0; i<MAX_PROGRAMS; i++){
@@ -47,5 +64,20 @@ void free_section(Section *section) {
     }
     free(section->programs);
     free(section);
+}
+
+void init_command(Command *command) {
+    command->sections = calloc(MAX_PROGRAMS, sizeof(char**));
+    for (int i=0; i<MAX_PROGRAMS; i++){
+        command->sections[i] = calloc(MAX_STRING_SIZE, sizeof(char ));
+    }
+}
+
+void free_command(Command *command) {
+    for (int i=0; i<MAX_PROGRAMS; i++){
+        free(command->sections[i]);
+    }
+    free(command->sections);
+    free(command);
 }
 

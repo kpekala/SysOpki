@@ -64,22 +64,59 @@ void parse_section(char * line, Section* new_section){
     }
 }
 
-void parse(char* path, Section **sections, int *sections_numb) {
+void parse_command(char *line, Command *command){
+    int itr = 0;
+    int section_i = 0;
+    //printf("%s",line);
+    while(itr < strlen(line)){
+        //printf("%d\n",section_i);
+        char * section = command->sections[section_i];
+        int i =0;
+        while (line[itr] == ' ')
+            itr++;
+        while (line[itr] != ' ' && line[itr] != '\n'){
+            section[i] = line[itr];
+            itr++;
+            i++;
+        }
+        while (line[itr] == ' ' || line[itr] == '\n')
+            itr++;
+        if (line[itr] == '|')
+            itr += 2;
+        section_i++;
+    }
+}
+
+void parse(char* path, Section **sections, int *sections_numb, Command **commands, int *command_numb) {
     FILE * fp;
     char * line = calloc(MAX_LINE_SIZE, sizeof(char));
-    fp = fopen(file_name, "r");
+    fp = fopen(path, "r");
     if (fp == NULL)
         exit(1);
 
     int sections_i=0;
+    int commands_i=0;
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
         if (strstr(line,"=")!= NULL){
+            printf("Section\n");
             sections[sections_i] = calloc(1, sizeof(Section));
-            parse_section(line,sections_i[sections_i]);
+            init_section(sections[sections_i]);
+            parse_section(line,sections[sections_i]);
             sections_i++;
+        }else if (strlen(line) <= 1){
+            printf("blank line\n");
+        }
+        else{
+            printf("pipe\n");
+            commands[commands_i] = calloc(1, sizeof(Command));
+            init_command(commands[commands_i]);
+            parse_command(line,commands[commands_i]);
+            commands_i++;
         }
     }
     fclose(fp);
     if(line)
         free(line);
+    *sections_numb = sections_i;
+    *command_numb = commands_i;
 }

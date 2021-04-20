@@ -9,10 +9,9 @@
 
 #define MAX_STRING_SIZE 30
 #define MAX_LINE_SIZE 200
-#define MAX_SECTIONS_SIZE 10
 
 void parse_section(char * line, Section* new_section);
 
-void parse(Section ** sections, int *sections_numb);
+void parse(char* path, Section **sections, int *sections_numb, Command **commands, int *command_numb);
 
 #endif //ZAD1_PARSER_H
