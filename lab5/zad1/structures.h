@@ -22,6 +22,7 @@ typedef struct Section{
 
 typedef struct Command{
     char ** sections;
+    int sections_numb;
 }Command;
 
 void print_section(Section *section);

@@ -36,7 +36,7 @@ void print_program(Program *program) {
 void init_program(Program *program) {
     program->args = (char**) calloc(MAX_ARGUMENTS, sizeof(char *));
     for (int i=0; i<MAX_ARGUMENTS; i++){
-        program->args[i] = (char *) calloc(MAX_STRING_SIZE, sizeof(char ));
+        //program->args[i] = (char *) calloc(MAX_STRING_SIZE, sizeof(char ));
     }
 }
 
@@ -51,6 +51,7 @@ void free_program(Program *program) {
 void init_section(Section *section) {
     section->name = calloc(MAX_STRING_SIZE, sizeof(char ));
     section->programs = calloc(MAX_PROGRAMS, sizeof(Program**));
+    section->programs_numb = 0;
     for (int i=0; i<MAX_PROGRAMS; i++){
         section->programs[i] = calloc(1, sizeof(Program));
         init_program(section->programs[i]);

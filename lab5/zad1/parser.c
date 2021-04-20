@@ -47,6 +47,7 @@ void parse_program(char *line, int *itr, int parsing_end, Section* section){
     Program *program = section->programs[i_pr];
     int arg_numb = 0;
     while (*itr < parsing_end){
+        program->args[arg_numb] = calloc(MAX_STRING_SIZE, sizeof(char ));
         parse_string(line,itr,program->args[arg_numb]);
         arg_numb++;
     }
@@ -98,16 +99,16 @@ void parse(char* path, Section **sections, int *sections_numb, Command **command
     int commands_i=0;
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
         if (strstr(line,"=")!= NULL){
-            printf("Section\n");
+            //printf("Section\n");
             sections[sections_i] = calloc(1, sizeof(Section));
             init_section(sections[sections_i]);
             parse_section(line,sections[sections_i]);
             sections_i++;
         }else if (strlen(line) <= 1){
-            printf("blank line\n");
+            //printf("blank line\n");
         }
         else{
-            printf("pipe\n");
+            //printf("pipe\n");
             commands[commands_i] = calloc(1, sizeof(Command));
             init_command(commands[commands_i]);
             parse_command(line,commands[commands_i]);
