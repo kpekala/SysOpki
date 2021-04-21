@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include "structures.h"
 #include "parser.h"
 
@@ -29,7 +30,45 @@ void run_section(Section * section){
         printf("Not enough programs!\n");
         return;
     }
-    char * buffer = calloc(BUFFER_SIZE, sizeof(char ));
+    int pipes[2][2];
+
+    int i;
+    for (i = 0; i < section->programs_numb; i++) {
+        if (i > 0) {
+            close(pipes[i % 2][0]);
+            close(pipes[i % 2][1]);
+        }
+
+        if(pipe(pipes[i % 2]) == -1) {
+            printf("Error on pipe.\n");
+            exit(EXIT_FAILURE);
+        }
+        pid_t cp = fork();
+        if (cp == 0) {
+            char ** exec_params = section->programs[i]->args;
+
+            if ( i  !=  section->programs_numb - 1) {
+                close(pipes[i % 2][0]);
+                if (dup2(pipes[i % 2][1], STDOUT_FILENO) < 0) {
+                    exit(EXIT_FAILURE);
+                }
+            }
+            if (i != 0) {
+                close(pipes[(i + 1) % 2][1]);
+                if (dup2(pipes[(i + 1) % 2][0], STDIN_FILENO) < 0) {
+                    close(EXIT_FAILURE);
+                }
+            }
+            execvp(exec_params[0], exec_params);
+
+            exit(EXIT_SUCCESS);
+        }
+    }
+    close(pipes[i % 2][0]);
+    close(pipes[i % 2][1]);
+    wait(NULL);
+    exit(0);
+    /*char * buffer = calloc(BUFFER_SIZE, sizeof(char ));
     //int old_fd[2];
     int new_fd[2];
     pipe(new_fd);
@@ -71,7 +110,8 @@ void run_section(Section * section){
             printf("%s buffer\n",buffer);
         }
     }
-    free(buffer);
+    free(buffer);*/
+
 }
 
 int main(int argc, char** argv){
