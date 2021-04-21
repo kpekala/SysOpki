@@ -86,6 +86,7 @@ void parse_command(char *line, Command *command){
             itr += 2;
         section_i++;
     }
+    command->sections_numb = section_i;
 }
 
 void parse(char* path, Section **sections, int *sections_numb, Command **commands, int *command_numb) {

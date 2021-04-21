@@ -8,6 +8,9 @@
 #define BUFFER_SIZE 100
 
 int sections_size = 0;
+int sections_numb = 0, commands_numb = 0;
+Section **sections;
+Command **commands;
 
 void free_commands(Command **commands){
     for (int i=0; i<MAX_SECTIONS_SIZE; i++){
@@ -25,8 +28,8 @@ void free_sections(Section **sections){
     free(sections);
 }
 
-void run_section(Section * section){
-    if (section->programs_numb < 2){
+void run_section(Section * section) {
+    if (section->programs_numb < 1) {
         printf("Not enough programs!\n");
         return;
     }
@@ -39,15 +42,15 @@ void run_section(Section * section){
             close(pipes[i % 2][1]);
         }
 
-        if(pipe(pipes[i % 2]) == -1) {
+        if (pipe(pipes[i % 2]) == -1) {
             printf("Error on pipe.\n");
             exit(EXIT_FAILURE);
         }
         pid_t cp = fork();
         if (cp == 0) {
-            char ** exec_params = section->programs[i]->args;
+            char **exec_params = section->programs[i]->args;
 
-            if ( i  !=  section->programs_numb - 1) {
+            if (i != section->programs_numb - 1) {
                 close(pipes[i % 2][0]);
                 if (dup2(pipes[i % 2][1], STDOUT_FILENO) < 0) {
                     exit(EXIT_FAILURE);
@@ -67,62 +70,56 @@ void run_section(Section * section){
     close(pipes[i % 2][0]);
     close(pipes[i % 2][1]);
     wait(NULL);
-    exit(0);
-    /*char * buffer = calloc(BUFFER_SIZE, sizeof(char ));
-    //int old_fd[2];
-    int new_fd[2];
-    pipe(new_fd);
-    //pipe(old_fd);
-    for (int i=0; i<section->programs_numb; i++){
-        //printf("haha %d\n",i);
-        pid_t c_pid = fork();
-        if(c_pid == 0){
-            printf("haha %d\n",i);
-            //creating next process
-            Program *program = section->programs[i];
-            if (i==0){
-                dup2(new_fd[1],STDOUT_FILENO);
-                printf("%d, args: %s %s\n",i, program->args[0], program->args[1]);
-                execv(program->args[0],program->args);
-                return;
-                //printf("%d\n",ix);
-                printf("elo\n");
-            }else{
-                printf("xdd %d\n",i);
-                if(fork() == 0){
-                    dup2(new_fd[1],STDOUT_FILENO);
-                    dup2(new_fd[0],STDIN_FILENO);
-                    printf("argsx: %s %s\n",program->args[0], program->args[1]);
-                    execv(program->args[0],program->args);
-                    return;
-                    printf("elo2\n");
-                }else{
-                    write(new_fd[1],buffer, sizeof(buffer));
-                    free(buffer);
-                    return;
-                }
-                return;
-            }
-        }else{
-            //reading process output
-            close(new_fd[1]);
-            read(new_fd[0],buffer,BUFFER_SIZE);
-            printf("%s buffer\n",buffer);
+}
+
+Section * find_section(char * section_name){
+    for (int i=0; i<sections_numb; i++){
+        if(strcmp(sections[i]->name,section_name) == 0){
+            return sections[i];
         }
     }
-    free(buffer);*/
+    return NULL;
+}
 
+Section * make_section(Command * command){
+    int global_i = 0;
+    //int global_size = MAX_PROGRAMS * command->sections_numb;
+    Section * new_section = calloc(1, sizeof(Section));
+    init_section(new_section);
+    for (int section_i=0; section_i<command->sections_numb; section_i++){
+        Section * section = find_section(command->sections[section_i]);
+        if(section == NULL){
+            printf("Oops\n");
+            exit(1);
+        }
+        new_section->programs_numb += section->programs_numb;
+        for(int j=0; j<section->programs_numb; j++){
+            new_section->programs[global_i] = section->programs[j];
+            global_i++;
+        }
+    }
+    return new_section;
+}
+
+void clean(){
+    free_sections(sections);
+    free_commands(commands);
 }
 
 int main(int argc, char** argv){
-    Section **sections = calloc(MAX_SECTIONS_SIZE, sizeof(Section));
-    Command **commands = calloc(MAX_SECTIONS_SIZE, sizeof(Command));
-
-    int sections_numb = 0, commands_numb = 0;
+    sections = calloc(MAX_SECTIONS_SIZE, sizeof(Section));
+    commands = calloc(MAX_SECTIONS_SIZE, sizeof(Command));
     parse("files/file1.txt",sections,&sections_numb,commands,&commands_numb);
-    run_section(sections[0]);
-    //print_commands(commands);
-    free_sections(sections);
-    free_commands(commands);
+    for (int i = 0; i < commands_numb; i++) {
+        Command * command = commands[i];
+        Section * section = make_section(command);
+        if(fork() == 0){
+            run_section(section);
+            clean();
+            free(section);
+            return 0;
+        }
+    }
+    clean();
     return 0;
 }

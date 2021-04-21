@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_PROGRAMS 5
-#define MAX_ARGUMENTS 5
+#define MAX_PROGRAMS 10
+#define MAX_ARGUMENTS 10
 #define MAX_STRING_SIZE 30
 #define MAX_SECTIONS_SIZE 10
 

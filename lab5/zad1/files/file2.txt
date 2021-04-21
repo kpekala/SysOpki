@@ -1,0 +1,7 @@
+skladnik1 = cat /etc/passwd
+skladnik3 = head -n 5
+skladnik2 = head -n 10
+
+skladnik1 | skladnik2
+skladnik1 | skladnik2
+
