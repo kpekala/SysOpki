@@ -7,7 +7,7 @@
 #define MAX_STRING_SIZE 60
 
 typedef enum mtype {
-    LIST = 1, INIT = 2
+    LIST = 1, INIT = 2, CONNECT = 3, DISCONNECT = 4
 } mtype;
 
 typedef struct Message {

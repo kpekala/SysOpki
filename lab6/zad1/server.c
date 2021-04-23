@@ -20,16 +20,19 @@ void close_queue();
 void int_handler(int);
 void do_init(struct Message *msg);
 void do_list(struct Message *msg);
+void do_connect(struct Message *msg);
 int find_queue_id(pid_t sender_pid);
+int find_client_key(int client_id);
 int create_message(struct Message *msg);
 
 int queue_descriptor = -2;
 int active = 1;
-int clients_data[MAX_CLIENTS][2];
+int clients_data[MAX_CLIENTS][3];
 int client_count = 0;
 
 
 int main() {
+    setvbuf (stdout, NULL, _IONBF, 0);
     if (atexit(close_queue) == -1)
     FAILURE_EXIT("server: registering server's atexit failed\n");
 
@@ -73,6 +76,8 @@ void handle_public_queue(Message *msg) {
             break;
         case LIST:
             do_list(msg);
+        case CONNECT:
+            do_connect(msg);
         default:
             break;
     }
@@ -120,15 +125,27 @@ void do_list(struct Message *msg){
     char *global_buffer = calloc(MAX_STRING_SIZE, sizeof(char ));
     for (int i=0; i < MAX_CLIENTS; i++) {
         char *buffer = calloc(MAX_STRING_SIZE, sizeof(char ));
-        sprintf(buffer,"%d, %d\n",clients_data[i][0], clients_data[i][1]);
+        sprintf(buffer,"pid: %d, id: %d, connected: %d, a: %d\n",clients_data[i][0], i, clients_data[i][2],clients_data[i][1]);
         strcat(global_buffer, buffer);
     }
     strcpy(msg->message_text,global_buffer);
     free(global_buffer);
 
     if (msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
-        FAILURE_EXIT("server: CALC response failed\n");
+        FAILURE_EXIT("server: LIST response failed\n");
 }
+void do_connect(struct Message *msg) {
+    int client_queue_id = create_message(msg);
+    if(client_queue_id == -1) return;
+
+    int receiver_id = atoi(msg->message_text);
+    printf("server: received receiver id: %d",receiver_id);
+    int receiver_key = find_client_key(receiver_id);
+    sprintf(msg->message_text,"%d",receiver_key);
+    if (msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
+        FAILURE_EXIT("server: CONNECT response failed\n");
+}
+
 
 
 void int_handler(int _) { exit(2); }
@@ -149,6 +166,13 @@ int create_message(struct Message *msg) {
 int find_queue_id(pid_t sender_pid) {
     for (int i=0; i < MAX_CLIENTS; ++i) {
         if(clients_data[i][0] == sender_pid)
+            return clients_data[i][1];
+    }
+    return -1;
+}
+int find_client_key(int client_id){
+    for (int i=0; i < MAX_CLIENTS; i++) {
+        if(i == client_id)
             return clients_data[i][1];
     }
     return -1;
