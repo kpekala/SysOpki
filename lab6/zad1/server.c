@@ -23,6 +23,7 @@ void do_list(struct Message *msg);
 void do_connect(struct Message *msg);
 int find_queue_id(pid_t sender_pid);
 int find_client_key(int client_id);
+int find_client_pid(int client_id);
 int create_message(struct Message *msg);
 
 int queue_descriptor = -2;
@@ -135,15 +136,60 @@ void do_list(struct Message *msg){
         FAILURE_EXIT("server: LIST response failed\n");
 }
 void do_connect(struct Message *msg) {
-    int client_queue_id = create_message(msg);
-    if(client_queue_id == -1) return;
+    int sender_queue_id = create_message(msg);
+    if(sender_queue_id == -1) return;
 
     int receiver_id = atoi(msg->message_text);
-    printf("server: received receiver id: %d",receiver_id);
+    printf("server: received receiver id: %d\n",receiver_id);
     int receiver_key = find_client_key(receiver_id);
     sprintf(msg->message_text,"%d",receiver_key);
-    if (msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
+
+    //sending receiver key to sender
+    if (msgsnd(sender_queue_id, msg, MSG_SIZE, 0) == -1)
         FAILURE_EXIT("server: CONNECT response failed\n");
+
+    //sending sender key to receiver
+    pid_t receiver_pid = find_client_pid(receiver_id);
+    if (receiver_pid == -1)
+        FAILURE_EXIT("server: receiver_pid == -1\n");
+    kill(receiver_pid,SIGUSR1);
+    Message receiver_msg;
+    receiver_msg.mtype = 1;
+    sprintf(receiver_msg.message_text, "%d", sender_queue_id);
+    if (msgsnd(receiver_key, &receiver_msg, MSG_SIZE, 0) == -1){
+        switch (errno) {
+            case EACCES:
+                printf("EACCES");
+                break;
+            case EAGAIN:
+                printf("EAGAIN");
+                break;
+            case EIDRM:
+                printf("EIDRM");
+                break;
+            case ENOENT:
+                printf("ENOENT");
+                break;
+            case ENOSPC:
+                printf("ENOSPC");
+                break;
+            case ENOMEM:
+                printf("ENOMEM");
+                break;
+            case EFAULT:
+                printf("EFAULT");
+                break;
+            case EINTR:
+                printf("EINTR");
+                break;
+            case EINVAL:
+                printf("EINVAL");
+                break;
+        }
+        FAILURE_EXIT("server: failed sending sender key: %d to receiver: %d\n",sender_queue_id,receiver_key);
+    }
+
+
 }
 
 
@@ -174,6 +220,14 @@ int find_client_key(int client_id){
     for (int i=0; i < MAX_CLIENTS; i++) {
         if(i == client_id)
             return clients_data[i][1];
+    }
+    return -1;
+}
+
+int find_client_pid(int client_id){
+    for (int i=0; i < MAX_CLIENTS; i++) {
+        if(i == client_id)
+            return clients_data[i][0];
     }
     return -1;
 }
