@@ -24,6 +24,8 @@ int queue_id = -1;
 int private_id = -1;
 key_t  private_key;
 
+void request_list(Message *msg);
+
 int main(int argc, char *argv[]) {
     setvbuf (stdout, NULL, _IONBF, 0);
     if(atexit(close_queue) == -1)
@@ -43,7 +45,36 @@ int main(int argc, char *argv[]) {
     printf("siema");
 
     register_client(private_key);
+    char cmd[20];
+    Message msg;
+    while(1) {
+        msg.sender_pid = getpid();
+        printf("client: enter your request: ");
+        if (fgets(cmd, 20, stdin) == NULL){
+            printf("client: error reading your command\n");
+            continue;
+        }
+        int n = strlen(cmd);
+        if (cmd[n-1] == '\n') cmd[n-1] = 0;
 
+
+        if (strcmp(cmd, "list") == 0) {
+            request_list(&msg);
+        }else if (strcmp(cmd, "quit") == 0) {
+            exit(0);
+        } else {
+            printf("client: incorrect command\n");
+        }
+    }
+}
+
+void request_list(Message *msg) {
+    msg->mtype = LIST;
+    if (msgsnd(queue_id, msg, MSG_SIZE, 0) == -1)
+    FAILURE_EXIT("client: LIST request failed");
+    if (msgrcv(private_id, msg, MSG_SIZE, 0, 0) == -1)
+    FAILURE_EXIT("client: catching LIST response failed");
+    printf("%s", msg->message_text);
 }
 
 int create_queue(char *path, int ID, int flags, int save) {

@@ -4,9 +4,10 @@
 #define MAX_CLIENTS  10
 #define PROJECT_ID 0x099
 #define MAX_CONT_SIZE 4096
+#define MAX_STRING_SIZE 60
 
 typedef enum mtype {
-    LOGIN = 1, MIRROR = 2, CALC = 3, TIME = 4, END = 5, INIT = 6
+    LIST = 1, INIT = 2
 } mtype;
 
 typedef struct Message {

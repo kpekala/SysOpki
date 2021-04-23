@@ -19,6 +19,9 @@
 void close_queue();
 void int_handler(int);
 void do_init(struct Message *msg);
+void do_list(struct Message *msg);
+int find_queue_id(pid_t sender_pid);
+int create_message(struct Message *msg);
 
 int queue_descriptor = -2;
 int active = 1;
@@ -39,11 +42,11 @@ int main() {
     if(path == NULL)
         FAILURE_EXIT("server: getting environmental variable 'HOME' failed\n");
 
-    key_t publicKey = ftok(path, PROJECT_ID);
-    if(publicKey == -1)
-        FAILURE_EXIT("server: generation of publicKey failed\n");
+    key_t public_key = ftok(path, PROJECT_ID);
+    if(public_key == -1)
+        FAILURE_EXIT("server: generation of public_key failed\n");
 
-    queue_descriptor = msgget(publicKey, IPC_CREAT | IPC_EXCL | 0666);
+    queue_descriptor = msgget(public_key, IPC_CREAT | IPC_EXCL | 0666);
     if(queue_descriptor == -1)
         FAILURE_EXIT("server: creation of public queue failed\n");
 
@@ -68,6 +71,8 @@ void handle_public_queue(Message *msg) {
         case INIT:
             do_init(msg);
             break;
+        case LIST:
+            do_list(msg);
         default:
             break;
     }
@@ -108,5 +113,43 @@ void do_init(struct Message *msg) {
     FAILURE_EXIT("server: LOGIN response failed\n");
 }
 
+void do_list(struct Message *msg){
+    int client_queue_id = create_message(msg);
+    if(client_queue_id == -1) return;
+
+    char *global_buffer = calloc(MAX_STRING_SIZE, sizeof(char ));
+    for (int i=0; i < MAX_CLIENTS; i++) {
+        char *buffer = calloc(MAX_STRING_SIZE, sizeof(char ));
+        sprintf(buffer,"%d, %d\n",clients_data[i][0], clients_data[i][1]);
+        strcat(global_buffer, buffer);
+    }
+    strcpy(msg->message_text,global_buffer);
+    free(global_buffer);
+
+    if (msgsnd(client_queue_id, msg, MSG_SIZE, 0) == -1)
+        FAILURE_EXIT("server: CALC response failed\n");
+}
+
 
 void int_handler(int _) { exit(2); }
+
+int create_message(struct Message *msg) {
+    int client_queue_id = find_queue_id(msg->sender_pid);
+    if (client_queue_id == -1){
+        printf("server: client not found\n");
+        return -1;
+    }
+
+    msg->mtype = msg->sender_pid;
+    msg->sender_pid = getpid();
+
+    return client_queue_id;
+}
+
+int find_queue_id(pid_t sender_pid) {
+    for (int i=0; i < MAX_CLIENTS; ++i) {
+        if(clients_data[i][0] == sender_pid)
+            return clients_data[i][1];
+    }
+    return -1;
+}
