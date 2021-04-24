@@ -30,9 +30,8 @@ void request_list(Message *msg);
 void request_connect(Message *msg);
 
 void init();
-
-
 void print_errno();
+void request_disconnect();
 
 int main(int argc, char *argv[]) {
     init();
@@ -84,14 +83,21 @@ void chat_loop(key_t receiver_key){
     printf("client: starting chat\n");
     while (1){
         Message rcv_msg;
-        int b;
-        while((b = msgrcv(private_id,&rcv_msg,MSG_SIZE,0,IPC_NOWAIT)) != -1){
-            printf("Message of %d bytes\n",b);
+        int ext = 0;
+        while((msgrcv(private_id, &rcv_msg, MSG_SIZE, 0, IPC_NOWAIT)) != -1){
+            //printf("Message of %d bytes\n",b);
             printf("Message: %s\n",rcv_msg.message_text);
+            if(strcmp(rcv_msg.message_text, "quit") == 0)
+                ext = 1;
+        }
+        if (ext){
+            printf("client: closing chat\n");
+            request_disconnect();
+            break;
         }
         Message send_msg;
         send_msg.mtype = 1;
-        if (fgets(send_msg.message_text, 20, stdin) == NULL){
+        if (fgets(send_msg.message_text, 50, stdin) == NULL){
             printf("client: error reading your command\n");
             continue;
         }
@@ -103,46 +109,22 @@ void chat_loop(key_t receiver_key){
         if(msgsnd(receiver_key,&send_msg,MSG_SIZE,0) == -1)
             FAILURE_EXIT("client: sending message failed\n");
 
-        if (strcmp(send_msg.message_text,"quit") == 0)
+        if (strcmp(send_msg.message_text,"quit") == 0){
+            request_disconnect();
             break;
+        }
 
     }
 }
 
-void print_errno() {
-    switch (errno) {
-        case EACCES:
-            printf("EACCES");
-            break;
-        case EEXIST:
-            printf("EEXIST");
-            break;
-        case EIDRM:
-            printf("EIDRM");
-            break;
-        case ENOENT:
-            printf("ENOENT");
-            break;
-        case ENOSPC:
-            printf("ENOSPC");
-            break;
-        case ENOMEM:
-            printf("ENOMEM");
-            break;
-        case E2BIG:
-            printf("E2BIG");
-            break;
-        case EINTR:
-            printf("EINTR");
-            break;
-        case EINVAL:
-            printf("EINVAL");
-            break;
-        case ENOMSG:
-            printf("ENOMSG");
-            break;
-    }
+void request_disconnect() {
+    Message msg;
+    msg.sender_pid = getpid();
+    msg.mtype = DISCONNECT;
+    if (msgsnd(queue_id, &msg, MSG_SIZE, 0) == -1)
+        FAILURE_EXIT("client: DISCONNECT request failed");
 }
+
 
 void request_connect(Message *msg) {
     msg->mtype = CONNECT;
@@ -156,6 +138,10 @@ void request_connect(Message *msg) {
         FAILURE_EXIT("client: catching CONNECT response failed");
     key_t receiver_key;
     receiver_key = atoi(msg->message_text);
+    if(receiver_key == -5){
+        printf("client: receiver is connected to other client!\n");
+        return;
+    }
     printf("receiver key: %d\n",receiver_key);
 
     chat_loop(receiver_key);
@@ -234,5 +220,41 @@ void init(){
         FAILURE_EXIT("Registering INT failed");
     if(signal(SIGUSR1, usr_handler) == SIG_ERR)
         FAILURE_EXIT("Registering USR1 failed");
+}
+
+
+void print_errno() {
+    switch (errno) {
+        case EACCES:
+            printf("EACCES");
+            break;
+        case EEXIST:
+            printf("EEXIST");
+            break;
+        case EIDRM:
+            printf("EIDRM");
+            break;
+        case ENOENT:
+            printf("ENOENT");
+            break;
+        case ENOSPC:
+            printf("ENOSPC");
+            break;
+        case ENOMEM:
+            printf("ENOMEM");
+            break;
+        case E2BIG:
+            printf("E2BIG");
+            break;
+        case EINTR:
+            printf("EINTR");
+            break;
+        case EINVAL:
+            printf("EINVAL");
+            break;
+        case ENOMSG:
+            printf("ENOMSG");
+            break;
+    }
 }
 

@@ -21,10 +21,14 @@ void int_handler(int);
 void do_init(struct Message *msg);
 void do_list(struct Message *msg);
 void do_connect(struct Message *msg);
+void do_disconnect(struct Message *msg);
 int find_queue_id(pid_t sender_pid);
 int find_client_key(int client_id);
 int find_client_pid(int client_id);
 int create_message(struct Message *msg);
+int find_id(pid_t sender_pid);
+int find_id_from_key(int sender_queue_id);
+void handle_public_queue(Message *msg);
 
 int queue_descriptor = -2;
 int active = 1;
@@ -79,6 +83,8 @@ void handle_public_queue(Message *msg) {
             do_list(msg);
         case CONNECT:
             do_connect(msg);
+        case DISCONNECT:
+            do_disconnect(msg);
         default:
             break;
     }
@@ -139,8 +145,20 @@ void do_connect(struct Message *msg) {
     int sender_queue_id = create_message(msg);
     if(sender_queue_id == -1) return;
 
+    int sender_id = find_id_from_key(sender_queue_id);
     int receiver_id = atoi(msg->message_text);
     printf("server: received receiver id: %d\n",receiver_id);
+    if (receiver_id < 0 || receiver_id >= MAX_CLIENTS)
+        FAILURE_EXIT("server: bad receiver id\n");
+
+    if (clients_data[receiver_id][2]){
+        printf("server: receiver client is connected!\n");
+        sprintf(msg->message_text,"%d",-5);
+        if (msgsnd(sender_queue_id, msg, MSG_SIZE, 0) == -1)
+            FAILURE_EXIT("server: CONNECT response failed\n");
+        return;
+    }
+
     int receiver_key = find_client_key(receiver_id);
     sprintf(msg->message_text,"%d",receiver_key);
 
@@ -157,39 +175,30 @@ void do_connect(struct Message *msg) {
     receiver_msg.mtype = 1;
     sprintf(receiver_msg.message_text, "%d", sender_queue_id);
     if (msgsnd(receiver_key, &receiver_msg, MSG_SIZE, 0) == -1){
-        switch (errno) {
-            case EACCES:
-                printf("EACCES");
-                break;
-            case EAGAIN:
-                printf("EAGAIN");
-                break;
-            case EIDRM:
-                printf("EIDRM");
-                break;
-            case ENOENT:
-                printf("ENOENT");
-                break;
-            case ENOSPC:
-                printf("ENOSPC");
-                break;
-            case ENOMEM:
-                printf("ENOMEM");
-                break;
-            case EFAULT:
-                printf("EFAULT");
-                break;
-            case EINTR:
-                printf("EINTR");
-                break;
-            case EINVAL:
-                printf("EINVAL");
-                break;
-        }
         FAILURE_EXIT("server: failed sending sender key: %d to receiver: %d\n",sender_queue_id,receiver_key);
     }
 
+    //setting clients status to connected
+    printf("server: sender pid: %d\n",msg->sender_pid);
+    clients_data[sender_id][2] = 1;
+    clients_data[receiver_id][2] = 1;
+}
 
+void do_disconnect(struct Message *msg){
+    int client_id = find_id(msg->sender_pid);
+    if(client_id < 0 || client_id >= MAX_CLIENTS){
+        printf("server: client id out of bounds\n");
+        return;
+    }
+    clients_data[client_id][2] = 0;
+}
+
+int find_id_from_key(int sender_queue_id) {
+    for (int i=0; i < MAX_CLIENTS; ++i) {
+        if(clients_data[i][1] == sender_queue_id)
+            return i;
+    }
+    return -1;
 }
 
 
@@ -231,3 +240,12 @@ int find_client_pid(int client_id){
     }
     return -1;
 }
+
+int find_id(pid_t sender_pid) {
+    for (int i=0; i < MAX_CLIENTS; ++i) {
+        if(clients_data[i][0] == sender_pid)
+            return i;
+    }
+    return -1;
+}
+

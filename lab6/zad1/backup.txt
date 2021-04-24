@@ -1,0 +1,29 @@
+switch (errno) {
+            case EACCES:
+                printf("EACCES");
+                break;
+            case EAGAIN:
+                printf("EAGAIN");
+                break;
+            case EIDRM:
+                printf("EIDRM");
+                break;
+            case ENOENT:
+                printf("ENOENT");
+                break;
+            case ENOSPC:
+                printf("ENOSPC");
+                break;
+            case ENOMEM:
+                printf("ENOMEM");
+                break;
+            case EFAULT:
+                printf("EFAULT");
+                break;
+            case EINTR:
+                printf("EINTR");
+                break;
+            case EINVAL:
+                printf("EINVAL");
+                break;
+        }
